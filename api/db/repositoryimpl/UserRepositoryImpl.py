@@ -7,7 +7,7 @@ from ..db_config import db
 class UserRepositoryImpl(User):
     user_collection = db["userDetail"]
     question_collection = db["questionBucket"]
-    game_collection = db["games"]
+    game_collection = db["gameRegister"]
     def create_subscriber(self,data:dict):
         try:
             user_exist_query = {"username":data["username"]}

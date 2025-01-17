@@ -5,16 +5,21 @@ from api.modelEntity.builder.util import  calculate_point
 class MultipleChoice(QuizzStrategy):
     player_repo = PlayerRepositoryData()
     def process(self,data):
-        question = self.player_repo.find_question(data.questionId)
-        if len(data["optionIds"]) != question["answerCount"]:
+        question = self.player_repo.find_question(data["questionId"])
+
+        if len(data["optionIds"]) != question.get("answerCount",0):
             data["points"] = 0
             data["validity"] ="Incorrect"
             self.player_repo.submit_question(data)
             return {"message":"InCorrect","questionId":data["questionId"]}
             # save result as failed and returned the status saying Incorrect
 
-        answers = [answer["answerText"] for answer in question["optionIds"]]
-        is_answer_correct = sorted(answers) == sorted(data["optionIds"])
+        answer_supplied= [
+            answer["answerText"]
+            for answer in question["options"]
+            if answer["optionId"] in data["optionIds"]
+        ]
+        is_answer_correct = sorted(answer_supplied) == sorted(question["answers"])
         if is_answer_correct:
             score_value = calculate_point(question["scorePoint"], question["timeInterval"],data["timeTaken"])
             data["points"] = score_value

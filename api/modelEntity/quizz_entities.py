@@ -10,8 +10,8 @@ class Question(serializers.Serializer):
     questionId = serializers.CharField(required=False)
     questionType = serializers.ChoiceField(choices=question_types)
     questionMessage = serializers.CharField(required=True)
-    timeInterval = serializers.FloatField(required=True)
-    optionType = serializers.ChoiceField(choices=["single", "multiple", "freetextInput"])
+    timeInterval = serializers.IntegerField(required=True)
+    optionType = serializers.ChoiceField(choices=["single", "multiple", "freetext"])
     answers = serializers.ListField(child= serializers.CharField(), allow_empty=False)
     options = Option(many=True)
     questionVideo = serializers.CharField(required=False, allow_null=True)
@@ -54,23 +54,30 @@ class Game(serializers.Serializer):
     gameTitle = serializers.CharField()
     gameOwnerId = serializers.CharField()
     questions = Question(many=True)
+    timerEnabled = serializers.BooleanField()
+
 
 class GameRegular(serializers.Serializer):
     gameTitle = serializers.CharField()
     gameOwnerId = serializers.CharField()
     questionIds = serializers.ListField(child=serializers.CharField())
+    timerEnabled = serializers.BooleanField()
 class SubmittedAnswer(serializers.Serializer):
     gameId = serializers.CharField()
     optionType = serializers.ChoiceField(choices=optionTypes)
     playerId = serializers.CharField()
     questionId = serializers.CharField()
-    timeTaken = serializers.FloatField()
-    optionIds = serializers.CharField()
+    timeTaken = serializers.IntegerField()
+    optionIds = serializers.ListField(child=serializers.CharField())
 
 class PlayerRegistration(serializers.Serializer):
     gameId = serializers.CharField()
     nickname = serializers.CharField()
 class LeaderBoard(serializers.Serializer):
     gameId = serializers.CharField()
+
+class NextQuestion(serializers.Serializer):
+    gameId = serializers.CharField()
     playerId = serializers.CharField()
+
 

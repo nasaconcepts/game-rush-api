@@ -23,8 +23,7 @@ def calculate_point(score_point_name: str, time_interval: int, time_taken: int):
     if time_taken == 0:
         return score
 
-    nominal_time = time_taken if time_interval < time_taken else time_interval
-
-    return score + (time_interval - nominal_time) / time_interval * score
+    nominal_time = time_taken if time_interval > time_taken else time_interval
+    return int(score + (time_interval - nominal_time) / time_interval * score)
 
 

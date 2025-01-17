@@ -3,11 +3,11 @@ from .strategy import *
 STRATEGY_REGISTRY ={
     "single":SingleChoice(),
     "multiple":MultipleChoice(),
-    "freeText":SpeechChoice(),
+    "freetext":SpeechChoice(),
 }
 
-def processQuiz(self,request):
-    strategy = STRATEGY_REGISTRY.get(request.optionType)
+def processQuiz(request):
+    strategy = STRATEGY_REGISTRY.get(request["optionType"])
 
     if not strategy:
         raise ValueError(f"No strategy configured {request.optionType}")

@@ -20,20 +20,20 @@ class admin_service:
         db_data = self.userRepo.create_subscriber(response_data)
 
         return Response(
-            {"message": "Admin user(s) created successfully", "subscriberId":response_data.get("subscriber_id")},
+            {"message": "Admin user(s) created successfully", "subscriberId":response_data.get("subscriberId")},
             status=status.HTTP_201_CREATED
         )
 
     def create_questions(self,request):
         questions = request.data
-        print(f"questions =>{questions}")
+
         serializer = Questions(data=request.data, many=isinstance(request.data,list))
         if not serializer.is_valid():
             return Response({"message":"validation failed","error":serializer.errors})
         else:
             valid_data = serializer.validated_data
             validated_questions = [build_question(question) for question in valid_data["questions"]]
-            print(f"Response {validated_questions}")
+
             self.userRepo.create_questions(validated_questions)
 
         return Response({"message","Successfully created questions"},status=201)
@@ -43,7 +43,7 @@ class admin_service:
         # send email to the subscriber with game detail
         serializer = Game(data=request.data)
         if not serializer.is_valid():
-            return Response({"message":"validation failed","error":serializer.errors})
+            return Response({"message":"validation failed","error":serializer.errors},status=400)
         else:
             valid_data = serializer.validated_data
             validated_questions = [build_question(question) for question in valid_data["questions"]]

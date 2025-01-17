@@ -6,7 +6,7 @@ class SingleChoice(QuizzStrategy):
     player_repo = PlayerRepositoryData()
     def process(self,data):
         # extract option Ids,
-        question = self.player_repo.find_question(data.questionId)
+        question = self.player_repo.find_question(data["questionId"])
         if len(data["optionIds"]) !=1:
             data["points"] = 0
             data["validity"] ="Incorrect"
@@ -14,8 +14,13 @@ class SingleChoice(QuizzStrategy):
             return {"message":"InCorrect","questionId":data["questionId"]}
             # save result as failed and returned the status saying Incorrect
 
-        answers = [answer["answerText"] for answer in question["optionIds"]]
-        is_answer_correct = answers[0] == data[0]
+        answer_supplied= [
+        answer["answerText"]
+        for answer in question["options"]
+        if answer["optionId"] in data["optionIds"]
+        ]
+        is_answer_correct = sorted(answer_supplied) == sorted(question["answers"])
+
         if is_answer_correct:
             score_value = calculate_point(question["scorePoint"], question["timeInterval"],data["timeTaken"])
             data["points"] = score_value
