@@ -11,7 +11,31 @@ def create_questions(request):
     return admin.create_questions(request)
 @api_view(["POST"])
 def generate_custom_game(request):
-    return admin.create_custom_game(request)
+    return admin.create_question_and_game(request)
 @api_view(["POST"])
 def generate_regular_game(request):
     return admin.create_regular_game(request)
+@api_view(["POST"])
+def generate_quiz_with_ai(request):
+    return admin.generate_ai_quiz(request)
+@api_view(["GET"])
+def fetch_my_games(request,gameOwnerId):
+    return admin.fetch_my_games(request,gameOwnerId)
+@api_view(["POST"])
+def create_geoplay_game(request):
+    return admin.create_geoplay_game(request)
+@api_view(["POST"])
+def fetch_next_preview_playground(request):
+    return admin.getNextPreviewPlayground(request)
+@api_view(["POST"])
+def fetch_preview_leaderboard(request):
+    return admin.getNextPreviewLeaderboard(request)
+@api_view(["POST"])
+def fetch_preview_players(request):
+    return admin.fetchPreviewPlayers(request)
+@api_view(["POST"])
+def fetch_subscriber_games(request):
+    return admin.fetch_subscriber_games(request)
+@api_view(["POST"])
+def initiate_players_invite(request):
+    return admin.do_invite_players(request)

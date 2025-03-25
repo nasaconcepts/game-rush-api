@@ -9,11 +9,22 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
+# IMPORT FOR ENVIRRONMENT
+import os
+from dotenv import load_dotenv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# variables for externalization
+# Read variables from .env or set defaults
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
+
+
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,7 +50,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
-    'corsheaders'
+    'corsheaders',
+    "rest_framework_simplejwt",
+    "dj_rest_auth",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",  # For Google authentication
+    "rest_framework.authtoken",
+#     configuration for Graphql
+#     "ariadne.contrib.django",
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -51,8 +72,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+    'api.middleware.JWTMiddleware',
+    # Add the JWT middleware
     # 'api.middleware.ExceptionMiddleware',
-]
+ ]
 
 ROOT_URLCONF = 'gamerushapi.urls'
 
@@ -129,6 +153,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    'chrome-extension://flnheeellpciglgpaodhkhmapeljopja',
+
+
 ]
 
 CORS_ALLOW_METHODS = [
@@ -145,3 +172,55 @@ CORS_ALLOW_HEADERS = [
     "authorization",
     "x-custom-header",
 ]
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME":  timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+SITE_ID = 1
+
+ACCOUNT_LOGIN_METHODS = {'email'}
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://localhost:6379/1",  # Change host if using Docker Compose
+    }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+ASGI_APPLICATION = "gamerushapi.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Use Redis for production
+    }
+
+}
+
+CHANNEL_ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    'chrome-extension://flnheeellpciglgpaodhkhmapeljopja',
+]
+CORS_ALLOW_CREDENTIALS = True

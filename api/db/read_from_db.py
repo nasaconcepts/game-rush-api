@@ -1,7 +1,7 @@
 from re import match
 from tokenize import group
 
-from db_config import db
+from api.db.db_config import db
 
 def fetchQuiz(queryQuiz):
     pass

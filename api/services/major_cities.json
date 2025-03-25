@@ -1,0 +1,200 @@
+[
+    {
+        "city": "New York",
+        "country": "USA",
+        "latitude": 40.7128,
+        "longitude": -74.006
+    },
+    {
+        "city": "Los Angeles",
+        "country": "USA",
+        "latitude": 34.0522,
+        "longitude": -118.2437
+    },
+    {
+        "city": "Chicago",
+        "country": "USA",
+        "latitude": 41.8781,
+        "longitude": -87.6298
+    },
+    {
+        "city": "London",
+        "country": "UK",
+        "latitude": 51.5074,
+        "longitude": -0.1278
+    },
+    {
+        "city": "Paris",
+        "country": "France",
+        "latitude": 48.870502,
+        "longitude": 2.304897
+    },
+    {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405
+    },
+    {
+        "city": "Paris",
+        "country": "France",
+        "latitude": 48.872961,
+        "longitude": 2.333287
+    },
+    {
+        "city": "Madrid",
+        "country": "Spain",
+        "latitude": 40.4168,
+        "longitude": -3.7038
+    },
+    {
+        "city": "Rome",
+        "country": "Italy",
+        "latitude": 41.9028,
+        "longitude": 12.4964
+    },
+    {
+        "city": "Amsterdam",
+        "country": "Netherlands",
+        "latitude": 52.3676,
+        "longitude": 4.9041
+    },
+    {
+        "city": "Tokyo",
+        "country": "Japan",
+        "latitude": 35.6895,
+        "longitude": 139.6917
+    },
+    {
+        "city": "Osaka",
+        "country": "Japan",
+        "latitude": 34.6937,
+        "longitude": 135.5023
+    },
+    {
+        "city": "Beijing",
+        "country": "China",
+        "latitude": 39.9042,
+        "longitude": 116.4074
+    },
+    {
+        "city": "Shanghai",
+        "country": "China",
+        "latitude": 31.2304,
+        "longitude": 121.4737
+    },
+    {
+        "city": "Sydney",
+        "country": "Australia",
+        "latitude": -33.8688,
+        "longitude": 151.2093
+    },
+    {
+        "city": "Melbourne",
+        "country": "Australia",
+        "latitude": -37.8136,
+        "longitude": 144.9631
+    },
+    {
+        "city": "Moscow",
+        "country": "Russia",
+        "latitude": 55.7558,
+        "longitude": 37.6173
+    },
+    {
+        "city": "S\u00e3o Paulo",
+        "country": "Brazil",
+        "latitude": -23.5505,
+        "longitude": -46.6333
+    },
+    {
+        "city": "Mexico City",
+        "country": "Mexico",
+        "latitude": 19.4326,
+        "longitude": -99.1332
+    },
+    {
+        "city": "Buenos Aires",
+        "country": "Argentina",
+        "latitude": -34.6037,
+        "longitude": -58.3816
+    },
+    {
+        "city": "Cairo",
+        "country": "Egypt",
+        "latitude": 30.0444,
+        "longitude": 31.2357
+    },
+    {
+        "city": "Cape Town",
+        "country": "South Africa",
+        "latitude": -33.9249,
+        "longitude": 18.4241
+    },
+    {
+        "city": "Johannesburg",
+        "country": "South Africa",
+        "latitude": -26.2041,
+        "longitude": 28.0473
+    },
+    {
+        "city": "Mumbai",
+        "country": "India",
+        "latitude": 19.076,
+        "longitude": 72.8777
+    },
+    {
+        "city": "Delhi",
+        "country": "India",
+        "latitude": 28.6139,
+        "longitude": 77.209
+    },
+    {
+        "city": "Bangkok",
+        "country": "Thailand",
+        "latitude": 13.7563,
+        "longitude": 100.5018
+    },
+    {
+        "city": "Dubai",
+        "country": "UAE",
+        "latitude": 25.276,
+        "longitude": 55.2963
+    },
+    {
+        "city": "Singapore",
+        "country": "Singapore",
+        "latitude": 1.3521,
+        "longitude": 103.8198
+    },
+    {
+        "city": "Istanbul",
+        "country": "Turkey",
+        "latitude": 41.0082,
+        "longitude": 28.9784
+    },
+    {
+        "city": "Seoul",
+        "country": "South Korea",
+        "latitude": 37.5665,
+        "longitude": 126.978
+    },
+    {
+        "city": "Jakarta",
+        "country": "Indonesia",
+        "latitude": -6.2088,
+        "longitude": 106.8456
+    },
+    {
+        "city": "Lagos",
+        "country": "Nigeria",
+        "latitude": 6.5244,
+        "longitude": 3.3792
+    },
+    {
+        "city": "Toronto",
+        "country": "Canada",
+        "latitude": 43.6511,
+        "longitude": -79.3832
+    }
+]
