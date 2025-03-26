@@ -61,6 +61,8 @@ INSTALLED_APPS = [
 #     configuration for Graphql
 #     "ariadne.contrib.django",
     "channels",
+    'graphene_django',
+  
 ]
 
 MIDDLEWARE = [
@@ -68,7 +70,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -224,3 +226,9 @@ CSRF_TRUSTED_ORIGINS = [
     'chrome-extension://flnheeellpciglgpaodhkhmapeljopja',
 ]
 CORS_ALLOW_CREDENTIALS = True
+GRAPHENE = {
+    'SCHEMA': 'api.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}

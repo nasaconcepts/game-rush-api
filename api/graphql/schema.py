@@ -1,71 +1,110 @@
-# from ariadne import QueryType, MutationType, SubscriptionType, make_executable_schema
-# from channels.layers import get_channel_layer
-# from asgiref.sync import async_to_sync
-# import json
+import graphene
+from graphene import ObjectType, String, ID, Field, List
+# from graphene_django import DjangoObjectType
+# from graphql_jwt.decorators import login_required
+# from channels_graphql_ws import Subscription
 
-# # Sample data storage (non-ORM)
-# players = []
+# In-memory storage for players
+players = [
+    {"playerId": "1", "name": "Player One"},
+    {"playerId": "2", "name": "Player Two"},
+]
 
-# query = QueryType()
-# mutation = MutationType()
-# subscription = SubscriptionType()
+# Player Type
+class PlayerType(ObjectType):
+    playerId = ID(required=True)
+    name = String(required=True)
 
-# # Query: Get active players in a game
-# @query.field("activePlayers")
-# def resolve_active_players(_, info, game):
-#     return [player for player in players if player["game"] == game]
+# Query
+class Query(ObjectType):
+    players = List(PlayerType)
+    player = Field(PlayerType, playerId=ID(required=True))
 
-# # Mutation: Player logs into the game
-# @mutation.field("playerLogin")
-# def resolve_player_login(_, info, username, game):
-#     new_player = {"username": username, "game": game}
-#     players.append(new_player)
+    def resolve_players(root, info):
+        return players
 
-#     # Publish event for subscriptions
-#     channel_layer = get_channel_layer()
-#     async_to_sync(channel_layer.group_send)(
-#         f"players_{game}",
-#         {"type": "player.joined", "player": new_player}
-#     )
+    def resolve_player(root, info, playerId):
+        return next((p for p in players if p["playerId"] == playerId), None)
 
-#     return new_player
+# Mutation
+class CreatePlayer(graphene.Mutation):
+    class Arguments:
+        name = String(required=True)
 
-# # Subscription: Notify when a new player joins
-# @subscription.source("playerJoined")
-# async def subscribe_player_joined(_, info, game):
-#     channel_layer = get_channel_layer()
-#     group_name = f"players_{game}"
+    player = Field(PlayerType)
 
-#     # Join the WebSocket group
-#     async_to_sync(channel_layer.group_add)(group_name, info.context["channel_name"])
+    def mutate(root, info, name):
+        player_id = str(len(players) + 1)
+        player = {"playerId": player_id, "name": name}
+        players.append(player)
+        
+        # # Notify subscribers
+        # OnPlayerCreated.broadcast(
+        #     group="player_updates",
+        #     payload={"player": player}
+        # )
+        
+        return CreatePlayer(player=player)
 
-#     try:
-#         while True:
-#             message = await info.context["channel_layer"].receive(info.context["channel_name"])
-#             if message["type"] == "player.joined":
-#                 yield message["player"]
-#     finally:
-#         async_to_sync(channel_layer.group_discard)(group_name, info.context["channel_name"])
+class UpdatePlayer(graphene.Mutation):
+    class Arguments:
+        playerId = ID(required=True)
+        name = String()
 
-# # Build schema
-# # type_defs = open("schema.graphql").read()
-# type_defs = """
-# type Player {
-#     username: String!
-#     game: String!
-# }
+    player = Field(PlayerType)
 
-# type Query {
-#     activePlayers(game: String!): [Player!]!
-# }
+    def mutate(root, info, playerId, name=None):
+        player = next((p for p in players if p["playerId"] == playerId), None)
+        if not player:
+            raise Exception("Player not found")
+        
+        if name:
+            player["name"] = name
+        
+        # # Notify subscribers
+        # OnPlayerUpdated.broadcast(
+        #     group="player_updates",
+        #     payload={"player": player}
+        # )
+        
+        return UpdatePlayer(player=player)
 
-# type Mutation {
-#     playerLogin(username: String!, game: String!): Player!
-# }
+class Mutation(ObjectType):
+    create_player = CreatePlayer.Field()
+    update_player = UpdatePlayer.Field()
 
-# type Subscription {
-#     playerJoined(game: String!): Player!
-# }
-# """
+# Subscriptions
+# class OnPlayerCreated(Subscription):
+#     class Arguments:
+#         pass
 
-# schema = make_executable_schema(type_defs,query, mutation, subscription)
+    player = Field(PlayerType)
+
+    @staticmethod
+    def subscribe(root, info):
+        return ["player_updates"]
+
+    @staticmethod
+    def publish(payload, info):
+        return OnPlayerCreated(player=payload["player"])
+
+# class OnPlayerUpdated(Subscription):
+#     class Arguments:
+#         pass
+
+    player = Field(PlayerType)
+
+    @staticmethod
+    def subscribe(root, info):
+        return ["player_updates"]
+
+    @staticmethod
+    def publish(payload, info):
+        return OnPlayerUpdated(player=payload["player"])
+
+# class Subscription(ObjectType):
+#     on_player_created = OnPlayerCreated.Field()
+#     on_player_updated = OnPlayerUpdated.Field()
+
+# schema = graphene.Schema(query=Query, mutation=Mutation, subscription=Subscription)
+schema = graphene.Schema(query=Query, mutation=Mutation)
