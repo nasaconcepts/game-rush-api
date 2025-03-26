@@ -1,16 +1,16 @@
 type Player {
-    username: String!
-    game: String!
+  username: String!
+  game: String!
 }
 
 type Query {
-    activePlayers(game: String!): [Player!]!
+  activePlayers(game: String!): [Player!]!
 }
 
 type Mutation {
-    playerLogin(username: String!, game: String!): Player!
+  playerLogin(username: String!, game: String!): Player!
 }
 
 type Subscription {
-    playerJoined(game: String!): Player!
+  playerJoined(game: String!): Player!
 }

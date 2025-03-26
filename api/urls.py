@@ -1,14 +1,14 @@
 from django.urls import path
 from api import views
 from api.controller import admin_controller,game_controller,authenticate_controller
-from ariadne.asgi import GraphQL
-from ariadne.asgi.handlers import GraphQLWSHandler
-from api.graphql.schema import schema
+
+
+
 
 
 
 # Explicit WebSocket handler
-graphql_app = GraphQL(schema, websocket_handler=GraphQLWSHandler(), )
+
 
 urlpatterns = [
     path('create-subscriber',admin_controller.create_subscriber,name='create_admin'),
@@ -43,8 +43,7 @@ urlpatterns = [
     path('google-login', authenticate_controller.google_login),
     path('token/refresh', authenticate_controller.generate_access_token, name='token_refresh'),
     path('verify-email/<str:token>', authenticate_controller.verify_email),
-    # GraphQL Url
-    path("graphql/", graphql_app),
+  
 
 
 

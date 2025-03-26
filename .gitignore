@@ -1,2 +1,10 @@
-*pyc
+# Ignore environment files
 .env
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore virtual environment
+venv/

@@ -12,21 +12,15 @@ import os
 from django.core.asgi import get_asgi_application
 
 # configure graphql
-from channels.routing import ProtocolTypeRouter, URLRouter
-from ariadne.asgi import GraphQL
-from channels_graphql_ws import GraphQLSubscriptionConsumer
+
+
 from django.urls import path
-from .schema import schema
+
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gamerushapi.settings')
 
-# application = get_asgi_application() <- original application setup
+application = get_asgi_application() 
 
 
-application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
-    "websocket": URLRouter([
-        path("graphql/", GraphQLSubscriptionConsumer.as_asgi(schema=schema)),
-    ]),
-})
+
