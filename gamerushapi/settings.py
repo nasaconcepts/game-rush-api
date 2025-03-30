@@ -59,9 +59,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",  # For Google authentication
     "rest_framework.authtoken",
 #     configuration for Graphql
-    "ariadne.contrib.django",
     "channels",
-    'graphene_django',
   
 ]
 

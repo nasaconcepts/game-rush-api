@@ -1,8 +1,10 @@
 from django.urls import path
 from api import views
 from api.controller import admin_controller,game_controller,authenticate_controller
-from graphene_django.views import GraphQLView
-from api.graphql.schema import schema
+
+from api.graphql.ariadne.schema import schema
+from .views import graphql_view
+
 
 
 
@@ -10,6 +12,7 @@ from api.graphql.schema import schema
 
 
 # Explicit WebSocket handler
+
 
 
 urlpatterns = [
@@ -45,13 +48,5 @@ urlpatterns = [
     path('google-login', authenticate_controller.google_login),
     path('token/refresh', authenticate_controller.generate_access_token, name='token_refresh'),
     path('verify-email/<str:token>', authenticate_controller.verify_email),
-    
-       path("graphql/", GraphQLView.as_view(
-        schema=schema,
-        graphiql=True,
-        subscription_path="/graphql/"
-    )),
-
-
-
+   
 ]

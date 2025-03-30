@@ -1,0 +1,11 @@
+type Query {
+  hello: String!
+}
+
+type Subscription {
+  messageAdded: MessagePayload!
+}
+
+type MessagePayload {
+  message: String!
+}
