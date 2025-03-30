@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",  # For Google authentication
     "rest_framework.authtoken",
 #     configuration for Graphql
-#     "ariadne.contrib.django",
+    "ariadne.contrib.django",
     "channels",
     'graphene_django',
   
@@ -226,9 +226,9 @@ CSRF_TRUSTED_ORIGINS = [
     'chrome-extension://flnheeellpciglgpaodhkhmapeljopja',
 ]
 CORS_ALLOW_CREDENTIALS = True
-GRAPHENE = {
-    'SCHEMA': 'api.schema.schema',
-    'MIDDLEWARE': [
-        'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    ],
-}
+# GRAPHENE = {
+#     'SCHEMA': 'api.schema.schema',
+#     'MIDDLEWARE': [
+#         'graphql_jwt.middleware.JSONWebTokenMiddleware',
+#     ],
+# }
