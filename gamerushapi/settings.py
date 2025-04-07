@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-from datetime import timedelta
+from datetime import timedelta,datetime
 from pathlib import Path
 # IMPORT FOR ENVIRRONMENT
 import os
@@ -173,7 +173,7 @@ CORS_ALLOW_HEADERS = [
     "x-custom-header",
 ]
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME":  timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
@@ -214,9 +214,11 @@ ASGI_APPLICATION = "gamerushapi.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Use Redis for production
-    }
-
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],  # Replace with your Redis server
+        },
+    },
 }
 
 CHANNEL_ALLOWED_HOSTS = ["*"]
@@ -224,9 +226,4 @@ CSRF_TRUSTED_ORIGINS = [
     'chrome-extension://flnheeellpciglgpaodhkhmapeljopja',
 ]
 CORS_ALLOW_CREDENTIALS = True
-# GRAPHENE = {
-#     'SCHEMA': 'api.schema.schema',
-#     'MIDDLEWARE': [
-#         'graphql_jwt.middleware.JSONWebTokenMiddleware',
-#     ],
-# }
+

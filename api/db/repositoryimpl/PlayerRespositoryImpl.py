@@ -168,6 +168,7 @@ class PlayerRepositoryData(Player):
 
             # Execute the aggregation
             players = list(self.player_register.aggregate(pipeline))
+            print(f"Spill players {players}")
             return players if players else []
         except Exception as ex:
             print(f"Error occurred fetching active users {ex}")
@@ -179,7 +180,7 @@ class PlayerRepositoryData(Player):
                 {"gameId": game_id},
                 {"_id": 0}
             )
-            print(f"GameData Result: {game_result}")
+            
             if not game_result:
 
                 return {}

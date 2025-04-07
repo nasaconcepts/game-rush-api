@@ -7,9 +7,11 @@ import bcrypt
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
+
 class UserManager:
     email_service = email_notifier()
     authenticate_repo = authenticate_repository()
+   
 
     def __init__(self):
         self.email_service = email_notifier()
@@ -19,7 +21,6 @@ class UserManager:
         # create user with hashed password
         hashed_password =None
 
-        print(f"show email in sign up user ->{email}")
         user = self.authenticate_repo.fetch_user(email)
         if user:
             return api_response(success=False, message="User already exist", status=409)
@@ -32,13 +33,16 @@ class UserManager:
             "email": email,
             "password": hashed_password,
             "isVerified": password is None,
-            "verificationToken": str(uuid.uuid4()) if login_mode=='google' else None
+            "verificationToken": str(uuid.uuid4()) if login_mode=='custom' else None,
+            "isProfiled":False,
+            "loginMode":login_mode
         }
-        if self.authenticate_repo.create_user(user_data):
-            # send email verification
-            # self.email_service.send_verification_email(user_data.get("email"), user_data["verificationToken"])
-            return api_response(success=True, data={"email": email}, message="User has been created successfully",
-                                status=200)
+        user_created_response  = self.authenticate_repo.create_user(user_data)
+        if user_created_response:
+            
+            tokens = self.generate_tokens(user_created_response)  # Use custom JWT generator
+            return api_response(success=True, data=tokens,message="Sign In was successful",status=200)
+        return None
 
     def authenticate(self, email, password):
         # Authenticate user by checking the hash password
@@ -54,7 +58,7 @@ class UserManager:
         return {
             "accessToken": str(self.refresh.access_token),
             "refreshToken": str(self.refresh),
-            "user":{"userId":user["userId"],"isVerified":user["isVerified"]}
+            "user":{"userId":user["userId"],"isVerified":user["isVerified"],"isProfiled":user.get("isProfiled",False),"loginMode":user["loginMode"]}
         }
 
     def verify_email(self, token):

@@ -29,7 +29,7 @@ def build_question(data:dict,all_quiz_data:dict):
 
     return data
 def build_subscriber(data:dict):
-    data["subscriberId"] =str(uuid.uuid4())
+    data["subscriberId"] =data["userId"]
     data["createdAt"] = datetime.now().isoformat()
     data["active"] = True
     return data

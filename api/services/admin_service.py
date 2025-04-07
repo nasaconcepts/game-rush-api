@@ -23,18 +23,13 @@ class admin_service:
         serializer = Subscriber(data=request.data, many=isinstance(request.data, list))
 
         if not serializer.is_valid():
-            return Response(
-                {"error": "Invalid data", "details": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return api_response(success=False, message="Invalid data",errors=serializer.errors, status=400)
+       
         response_data = build_subscriber(request.data)
 
         db_data = self.userRepo.create_subscriber(response_data)
-
-        return Response(
-            {"message": "Admin user(s) created successfully", "subscriberId": response_data.get("subscriberId")},
-            status=status.HTTP_201_CREATED
-        )
+        return api_response(success=True, message="Subscriber created successfully", data=db_data, status=201)
+       
 
     def create_questions(self, request):
         questions = request.data
@@ -172,6 +167,8 @@ class admin_service:
         valid_data = serializer.validated_data
 
         games = self.userRepo.get_games_pagination(valid_data)
+        if not games or len(games.get("games")) == 0:
+            return api_response(success=False, message="No games found", status=404)
         return api_response(success=True, message="Games retrieved successfully", data=games, status=200)
 
     def do_invite_players(self, request):

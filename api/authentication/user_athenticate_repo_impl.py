@@ -1,6 +1,7 @@
 from api.db.read_from_db import db
 
 
+
 class authenticate_repository:
 
     user_collection = db["Users"]

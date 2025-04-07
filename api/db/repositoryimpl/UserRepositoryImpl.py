@@ -1,6 +1,7 @@
 from tokenize import group
 from typing import Optional
 from rest_framework.response import Response
+import math
 
 from ..repository.UserRepository import User
 from ..db_config import db
@@ -17,7 +18,7 @@ class UserRepositoryImpl(User):
 
     def create_subscriber(self, data: dict):
         try:
-            user_exist_query = {"username": data["username"]}
+            user_exist_query = {"subscriberId": data["subscriberId"]}
 
             user = self.user_collection.find_one(user_exist_query)
 
@@ -328,12 +329,30 @@ class UserRepositoryImpl(User):
 
             # order by create date descending
             query_pagination= {"gameOwnerId":data["gameOwnerId"]}
-
+            countGames = self.game_collection.count_documents(query_pagination)
+            if countGames == 0:
+                return {"games":[],"pagination": {
+                    "currentPage": 0,
+                    "pageSize": limit,
+                    "totalPages": 0,
+                    "totalItems": 0,
+                    "hasNextPage": False,
+                    "hasPrevPage": False
+                }}
             games = list(self.game_collection.find(query_pagination,{"_id": 0}).skip(skip).limit(limit).sort([("createdOn",-1)]))
-            print(f"Games => {games}")
+            
+        
             if games:
                 list_my_games = [subscriber_game_list(game) for game in games]
-                return list_my_games
+                totalPages = math.ceil(countGames / limit)
+                return {"games": list_my_games,"pagination": {
+                    "currentPage": page,
+                    "pageSize": limit,
+                    "totalPages": totalPages,
+                    "totalItems": countGames,
+                    "hasNextPage": page <totalPages,
+                    "hasPrevPage": page > 1
+                }}
             return []
         except Exception as e:
             print(f"Error retrieving game {e}")

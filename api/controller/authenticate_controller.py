@@ -8,22 +8,15 @@ user_service = UserManager()
 @api_view(['POST'])
 def google_login(request):
     token = request.data.get('token')
-    auth_data = google_service.google_auth(token)
-    print(f"Google login-> {auth_data}")
-    if auth_data:
-        return api_response(success=True,data=auth_data,message="Sign In was successful",status=200)
-
-    return api_response(success=False,message="Invalid Google Token",status=400)
+    return google_service.google_auth(token)
 
 @api_view(['POST'])
 def register_user(request):
     email = request.data.get('email')
     password = request.data.get('password')
 
-    user = user_service.signup_user(email, password)
-    if user:
-        tokens = user_service.generate_tokens(user)  # Use custom JWT generator
-        return api_response(success=True, data=tokens,message="User created successfully",status=201)
+    return user_service.signup_user(email, password)
+
 @api_view(['POST'])
 def login_user(request):
     email = request.data.get('email')
@@ -32,6 +25,7 @@ def login_user(request):
     user = user_service.authenticate(email, password)
     if user:
         tokens = user_service.generate_tokens(user)  # Use custom JWT generator
+        
         return api_response(success=True, data=tokens,message="Sign In was successful",status=200)
 
     return api_response(success=False,message="Invalid credentials",status=400)

@@ -1,9 +1,25 @@
+# your_app/schema.graphql
+
 type Query {
   hello: String!
+  getUser(id: ID!): User
+  allUsers: [User!]!
+}
+
+type Mutation {
+  createUser(username: String!, email: String!): User!
+  updateUser(id: ID!, username: String): User!
 }
 
 type Subscription {
-  messageAdded: MessagePayload!
+  userCreated: User!
+  userUpdated: User!
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
 }
 
 type MessagePayload {

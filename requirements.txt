@@ -63,6 +63,7 @@ multidict==6.2.0
 oauthlib==3.2.2
 openai==1.58.1
 packaging==24.2
+pillow==11.1.0
 pipdeptree==2.26.0
 promise==2.3
 propcache==0.3.0
