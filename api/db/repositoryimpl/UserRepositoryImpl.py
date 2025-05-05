@@ -21,17 +21,21 @@ class UserRepositoryImpl(User):
             user_exist_query = {"subscriberId": data["subscriberId"]}
 
             user = self.user_collection.find_one(user_exist_query)
-
             if user:
-                print(f"My User Detail => {user}")
-                raise ValueError("User already exist")
+                new_user = self.user_collection.find_one(user_exist_query, {"_id": 0})
+                return new_user
             else:
+            
                 # new_user = self.user_collection.insert_one(data)
-                new_user = db.userDetail.insert_one(data)
+                self.user_collection.insert_one(data)
+                query = {"subscriberId": data["subscriberId"]}
+                print(f"Query to fetch new user => {query}")
+                new_user = self.user_collection.find_one(query, {"_id": 0})
+
                 return new_user
 
         except Exception as e:
-            return Response({"error": str(e)}, status=400)
+            return None
 
     def create_questions(self, data: list):
         try:
@@ -341,7 +345,7 @@ class UserRepositoryImpl(User):
                 }}
             games = list(self.game_collection.find(query_pagination,{"_id": 0}).skip(skip).limit(limit).sort([("createdOn",-1)]))
             
-        
+            print(f"Game pagination preview =>{games}")
             if games:
                 list_my_games = [subscriber_game_list(game) for game in games]
                 totalPages = math.ceil(countGames / limit)

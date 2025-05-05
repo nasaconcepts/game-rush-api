@@ -3,6 +3,7 @@ from ..modelEntity.quizz_entities import Subscriber, Questions, Game, GameRegula
 from ..modelEntity.builder.Builder import build_subscriber, build_question, build_game, build_ai_question,\
 create_geoplay_game, build_invitation_details, build_subscriber_game_details
 from ..db.repositoryimpl.UserRepositoryImpl import UserRepositoryImpl
+from api.db.repositoryimpl.user_athenticate_repo_impl import authenticate_repository
 from api.db.repositoryimpl.subscribe_repository_impl import subscribe_repository_impl
 from api.apiservices.openaiapi import ai_generate_questions
 import json
@@ -11,6 +12,7 @@ from rest_framework import status
 from ..util.utils import api_response
 from api.notifications.email_notification import email_notifier
 from api.db.repositoryimpl.cached_repository_impl import cached_repository_impl
+import uuid
 
 
 class admin_service:
@@ -18,6 +20,7 @@ class admin_service:
     email_notifier_service = email_notifier()
     subscriber_repo = subscribe_repository_impl()
     cache_service = cached_repository_impl()
+    authenticate_repo = authenticate_repository()
 
     def create_subscriber(self, request):
         serializer = Subscriber(data=request.data, many=isinstance(request.data, list))
@@ -26,10 +29,16 @@ class admin_service:
             return api_response(success=False, message="Invalid data",errors=serializer.errors, status=400)
        
         response_data = build_subscriber(request.data)
+#        # Check if the User already exists
+        if self.authenticate_repo.find_user_by_id(response_data["subscriberId"]):
+            
+            db_data = self.userRepo.create_subscriber(response_data)
+            print(f"Data from DB => {db_data}")
+            self.authenticate_repo.update_user_profile_status(response_data["subscriberId"])
+    
 
-        db_data = self.userRepo.create_subscriber(response_data)
-        return api_response(success=True, message="Subscriber created successfully", data=db_data, status=201)
-       
+            return api_response(success=True, message="Subscriber created successfully", data=db_data, status=201)
+        return api_response(success=False, message="User is yet to be signed on", status=400)
 
     def create_questions(self, request):
         questions = request.data
@@ -117,7 +126,6 @@ class admin_service:
         gameType = request.data.get("gameType")
         if not gameType:
             return api_response(success=False, message="Invalid data provided", status=400)
-        print(f"Data Preview => {request.data}")
         serializer = PreviewRequest(data=request.data)
         if not serializer.is_valid():
             return api_response(success=False, message="Invalid data provided", status=400)
@@ -167,6 +175,7 @@ class admin_service:
         valid_data = serializer.validated_data
 
         games = self.userRepo.get_games_pagination(valid_data)
+    
         if not games or len(games.get("games")) == 0:
             return api_response(success=False, message="No games found", status=404)
         return api_response(success=True, message="Games retrieved successfully", data=games, status=200)
@@ -215,4 +224,34 @@ class admin_service:
             return response
         return response
 
+    def fetch_game_details(self, gameId):
+        if not gameId:
+            return api_response(success=False, message="Invalid data provided", status=400)
+        game = self.cache_service.get_game_cached_or_db(gameId)
+        if not game:
+            return api_response(success=False, message="Game does not exist", status=404)
+        
+        return api_response(success=True, data=game, message="Game retrieved successfully", status=200)
+    def fetch_business_categories(self, request):
+        categories = self.subscriber_repo.fetch_business_categories()
+        if not categories:
+            return api_response(success=False, data=categories,message="No categories found", status=404)
+        return api_response(success=True, data=categories, message="Categories retrieved successfully", status=200)
+    def create_business_category(self, request):
+        
+        data = request.data
+        categories = data.get("categoryNames")
+        if data.get("categoryNames"):
+            if not isinstance(categories, list) or not all(isinstance(category, str) for category in categories):
+                return api_response(success=False, message="Invalid data provided", status=400)
 
+            categories_data = [{"categoryId":str(uuid.uuid4()), "categoryName": category.strip()} for category in categories if category.strip()]
+            if not categories_data:
+                return api_response(success=False, message="No valid categories provided", status=400)
+
+            created_categories = self.subscriber_repo.create_business_category(categories_data)
+            
+            if not created_categories:
+                return api_response(success=False, message="Failed to create categories", status=500)
+
+            return api_response(success=True, data=created_categories, message="Categories created successfully", status=201)

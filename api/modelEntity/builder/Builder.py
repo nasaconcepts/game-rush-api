@@ -32,6 +32,7 @@ def build_subscriber(data:dict):
     data["subscriberId"] =data["userId"]
     data["createdAt"] = datetime.now().isoformat()
     data["active"] = True
+    del data["userId"]
     return data
 
 def build_player(data:dict):

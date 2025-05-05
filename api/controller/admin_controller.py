@@ -39,3 +39,12 @@ def fetch_subscriber_games(request):
 @api_view(["POST"])
 def initiate_players_invite(request):
     return admin.do_invite_players(request)
+@api_view(["GET"])
+def fetch_game_details(request,gameId):
+    return admin.fetch_game_details(gameId)
+@api_view(["GET"])
+def fetch_business_categories(request):
+    return admin.fetch_business_categories(request)
+@api_view(["POST"])
+def create_business_category(request):
+    return admin.create_business_category(request)

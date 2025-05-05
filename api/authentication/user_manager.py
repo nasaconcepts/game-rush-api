@@ -1,10 +1,12 @@
 import uuid
 
-from api.authentication.user_athenticate_repo_impl import authenticate_repository
+from api.db.repositoryimpl.user_athenticate_repo_impl import authenticate_repository
 from api.notifications.email_notification import email_notifier
 from ..util.utils import api_response
 import bcrypt
 from rest_framework_simplejwt.tokens import RefreshToken
+from api.authentication.jwt_token import do_generate_tokens
+import jwt
 
 
 
@@ -54,10 +56,11 @@ class UserManager:
     def generate_tokens(self, user):
         self.refresh["email"] = user["email"]
         print(f"Show users {user}")
+        access_token,refresh_token = do_generate_tokens(user["email"])
 
         return {
-            "accessToken": str(self.refresh.access_token),
-            "refreshToken": str(self.refresh),
+            "accessToken": access_token,
+            "refreshToken": refresh_token,
             "user":{"userId":user["userId"],"isVerified":user["isVerified"],"isProfiled":user.get("isProfiled",False),"loginMode":user["loginMode"]}
         }
 
@@ -70,12 +73,14 @@ class UserManager:
         """
         try:
             # Decode the refresh token
-            refresh = RefreshToken(refresh_token)
+            token_payload = jwt.decode(refresh_token, options={"verify_signature": False})
+            email = token_payload.get("email")
+            access_token,refresh_token = do_generate_tokens(email)
 
             # Generate a new access token
-            new_access_token = str(refresh.access_token)
+           
 
-            response = {"accessToken": new_access_token}
+            response = {"accessToken": access_token, "refreshToken": refresh_token}
             return api_response(success=True, data=response, message="Access token generated successfully", status=200)
 
         except Exception:

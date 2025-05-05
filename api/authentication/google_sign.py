@@ -1,7 +1,7 @@
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from api.authentication.user_manager import UserManager
-from api.authentication.user_athenticate_repo_impl import authenticate_repository
+from api.db.repositoryimpl.user_athenticate_repo_impl import authenticate_repository
 from api.util.utils import api_response
 import os
 import jwt

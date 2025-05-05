@@ -38,11 +38,13 @@ urlpatterns = [
     path('fetch-preview-leaderboard',admin_controller.fetch_preview_leaderboard,name='fetch-preview-leaderboard'),
     path('fetch-preview-players',admin_controller.fetch_preview_players,name='fetch-preview-players'),
 
-
     path('fetch-subscriber-game-list',admin_controller.fetch_subscriber_games,name='fetch-subscriber-game-list'),
     path('invite-player',admin_controller.initiate_players_invite,name='invite-players'),
+    path('fetch-game-details/<str:gameId>',admin_controller.fetch_game_details,name='game-details'),
+    path('fetch-business-categories',admin_controller.fetch_business_categories,name='fetch-business-categories'),
+    path('create-business-categories',admin_controller.create_business_category,name='create-business-category'),
 
-#     Authentication Services
+#   Authentication Services
     path('login', authenticate_controller.login_user),
     path('register', authenticate_controller.register_user),
     path('google-login', authenticate_controller.google_login),

@@ -48,8 +48,8 @@ class AIAnswerTrail(serializers.Serializer):
     dateCreated = serializers.DateTimeField()
 
 class Subscriber (serializers.Serializer):
-    username = serializers.CharField()
-    name = serializers.CharField()
+    userId = serializers.CharField()
+    businessSectorId = serializers.CharField()
     subscriptionPlan = serializers.ChoiceField(choices=subscriptions)
 class Game(serializers.Serializer):
     gameTitle = serializers.CharField()
